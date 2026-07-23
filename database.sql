@@ -1,7 +1,4 @@
-CREATE DATABASE IF NOT EXISTS elitemart;
-USE elitemart;
 
--- =========================
 -- USERS TABLE
 -- =========================
 CREATE TABLE users (
