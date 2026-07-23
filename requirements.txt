@@ -5,3 +5,4 @@ Flask-Login
 Flask-WTF
 email-validator
 PyMySQL
+mysql-connector-python
