@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg border-0 rounded-4 p-4">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-5 text-center">
+                <img src="{{ url_for('static', filename='images/' + product.image) }}"
+                     class="img-fluid rounded shadow"
+                     style="max-height:450px;">
+            </div>
+
+            <div class="col-md-7">
+
+                <h2 class="fw-bold mb-2">
+                    {{ product.product_name }}
+                </h2>
+
+                {% if rating_data.total_reviews > 0 %}
+                <div class="mb-3">
+                    <span class="badge bg-warning text-dark fs-6 p-2">
+                        ⭐ {{ rating_data.avg_rating }}/5
+                    </span>
+
+                    <span class="text-muted ms-2">
+                        ({{ rating_data.total_reviews }} Reviews)
+                    </span>
+                </div>
+                {% else %}
+                <p class="text-muted">No ratings yet.</p>
+                {% endif %}
+
+                <h2 class="text-success fw-bold mb-3">
+                    ₹{{ product.price }}
+                </h2>
+
+                <p class="text-muted fs-5">
+                    {{ product.description }}
+                </p>
+
+                <div class="mt-4">
+
+                    <a href="/add_to_cart/{{ product.id }}"
+                       class="btn btn-success btn-lg me-2">
+                        🛒 Add to Cart
+                    </a>
+
+                    <a href="/add_to_wishlist/{{ product.id }}"
+                       class="btn btn-outline-danger btn-lg me-2">
+                        ❤️ Wishlist
+                    </a>
+
+                    <a href="/"
+                       class="btn btn-outline-secondary btn-lg">
+                        ← Back
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr class="my-5">
+
+    <h3 class="fw-bold mb-4">✍ Write a Review</h3>
+
+    <form action="{{ url_for('add_review', product_id=product.id) }}" method="POST">
+
+        <div class="mb-3">
+            <label class="form-label">Rating</label>
+
+            <select name="rating" class="form-control" required>
+                <option value="">Select Rating</option>
+                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                <option value="4">⭐⭐⭐⭐ (4)</option>
+                <option value="3">⭐⭐⭐ (3)</option>
+                <option value="2">⭐⭐ (2)</option>
+                <option value="1">⭐ (1)</option>
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label class="form-label">Your Review</label>
+
+            <textarea
+                name="review"
+                class="form-control"
+                rows="4"
+                placeholder="Write your review..."
+                required></textarea>
+
+        </div>
+
+        <button class="btn btn-primary">
+            Submit Review
+        </button>
+
+    </form>
+
+    <hr class="my-5">
+
+    <h3 class="fw-bold mb-4">Customer Reviews</h3>
+
+    {% if reviews %}
+
+        {% for review in reviews %}
+
+        <div class="card shadow-sm border-0 mb-3">
+
+            <div class="card-body">
+
+                <h5 class="mb-1">
+                    {{ review.username }}
+                </h5>
+
+                <p class="text-warning mb-2">
+                    ⭐ {{ review.rating }}/5
+                </p>
+
+                <p class="text-muted">
+                    {{ review.review }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No reviews yet.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

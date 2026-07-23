@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2>Checkout</h2>
+    <hr>
+
+    <h4>Total Amount: ₹{{ total }}</h4>
+
+    <form method="POST">
+
+        <div class="mb-3">
+            <label>Delivery Address</label>
+            <textarea class="form-control" name="address" rows="4" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Payment Method</label>
+
+            <select class="form-control" name="payment">
+                <option value="COD">Cash on Delivery</option>
+                <option value="Online">Online Payment</option>
+            </select>
+        </div>
+
+        <button class="btn btn-success">
+            Place Order
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

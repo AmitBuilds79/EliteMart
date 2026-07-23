@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row align-items-center">
+
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold">Welcome to EliteMart</h1>
+            <p class="lead">
+                Discover the latest fashion, electronics, groceries, and much more at the best prices.
+            </p>
+           
+
+            <a href="#products" class="btn btn-primary btn-lg">Shop Now</a>
+            <a href="#products" class="btn btn-outline-dark btn-lg">Explore</a>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800"
+                 class="img-fluid rounded"
+                 alt="Shopping">
+        </div>
+
+    </div>
+</div>
+<hr class="my-5">
+
+<div class="container">
+    <h2 id="products" class="text-center mb-4">Featured Products</h2>
+    <div class="row">
+
+{% for product in products %}
+
+<div class="col-md-3 mb-4">
+
+    <div class="card shadow">
+
+        <a href="{{ url_for('product_details', product_id=product.id) }}"
+   class="text-decoration-none text-dark">
+
+            <img src="{{ url_for('static', filename='images/' + product.image) }}"
+                 class="card-img-top"
+                 height="250">
+
+            <div class="card-body text-center">
+                <h5>{{ product.product_name }}</h5>
+
+                <p class="text-muted">
+    Category: {{ product.category_name }}
+</p>
+
+                <h4 class="text-primary">
+                    ₹{{ product.price }}
+                </h4>
+            </div>
+
+        </a>
+
+        <div class="card-body text-center pt-0">
+
+    {% if product.stock > 0 %}
+        <a href="/add_to_cart/{{ product.id }}" class="btn btn-success">
+            Add to Cart
+        </a>
+    {% else %}
+        <button class="btn btn-secondary" disabled>
+            Out of Stock
+        </button>
+    {% endif %}
+
+</div>
+
+    </div>
+
+</div>
+{% endfor %}
+
+</div>
+</div>
+{% endblock %}

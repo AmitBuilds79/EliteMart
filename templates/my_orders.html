@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">📦 My Orders</h2>
+
+    {% if orders %}
+
+    <table class="table table-bordered text-center">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Total Amount</th>
+                <th>Order Status</th>
+                <th>Payment Status</th>
+                <th>Action</th>
+            </tr>
+          
+        </thead>
+
+        <tbody>
+
+        {% for order in orders %}
+
+        <tr>
+          <td>
+    <a href="{{ url_for('order_details', order_id=order.id) }}">
+        {{ order.id }}
+    </a>
+</td>
+            <td>₹{{ order.total_amount }}</td>
+            <td>{{ order.order_status }}</td>
+            <td>{{ order.payment_status }}</td>
+            <td>
+    <a href="{{ url_for('order_details', order_id=order.id) }}"
+       class="btn btn-primary btn-sm">
+        View Details
+    </a>
+</td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <h4>No Orders Found 😔</h4>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

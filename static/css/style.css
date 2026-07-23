@@ -1,0 +1,52 @@
+
+html {
+    scroll-behavior: smooth;
+}
+
+body{
+    background:#f5f5f5;
+}
+
+.navbar-brand{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.display-4{
+    margin-top:50px;
+}
+
+.btn{
+    margin-top:20px;
+    margin-right:10px;
+}
+
+.navbar {
+    padding: 12px 30px;
+}
+
+.navbar-brand {
+    font-size: 30px;
+    font-weight: bold;
+    margin-right: 25px;
+}
+
+.navbar form {
+    flex: 1;
+    max-width: 420px;
+}
+
+.navbar input[type="search"] {
+    border-radius: 25px;
+    padding: 10px 18px;
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    margin-left: 15px;
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: orange !important;
+}

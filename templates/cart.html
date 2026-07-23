@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">🛒 My Cart</h2>
+
+    {% if cart_items %}
+
+    <table class="table table-bordered text-center">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for item in cart_items %}
+        <tr>
+
+            <td>
+                <img src="{{ url_for('static', filename='images/' + item.image) }}"
+                     width="80">
+            </td>
+
+            <td>{{ item.product_name }}</td>
+
+            <td>₹{{ item.price }}</td>
+
+            <td>
+                <a href="/decrease_quantity/{{ item.id }}" class="btn btn-warning btn-sm">-</a>
+
+                <strong style="margin:0 10px;">{{ item.quantity }}</strong>
+
+                <a href="/increase_quantity/{{ item.id }}" class="btn btn-success btn-sm">+</a>
+            </td>
+
+            <td>
+                <a href="/remove_from_cart/{{ item.id }}"
+                   class="btn btn-danger btn-sm">
+                   Remove
+                </a>
+            </td>
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <div class="text-end mt-4">
+        <h4>Total Amount: ₹{{ total }}</h4>
+
+        <a href="/checkout" class="btn btn-success">
+            Proceed to Checkout
+        </a>
+    </div>
+
+    {% else %}
+
+    <h4>Your Cart is Empty 😔</h4>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
