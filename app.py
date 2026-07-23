@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from config import get_db_connection
 import mysql.connector
@@ -5,6 +6,9 @@ import mysql.connector
 app = Flask(__name__)
 app.secret_key = "elite123"
 
+
+print("DB_HOST =", os.environ.get("DB_HOST"))
+print("DB_PORT =", os.environ.get("DB_PORT"))
 # Database Connection Test
 try:
     conn = get_db_connection()
