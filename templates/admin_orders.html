@@ -104,13 +104,10 @@ Delivered
 
 <script>
 function searchTable() {
-
     let input = document.getElementById("searchInput").value.toLowerCase();
-
     let rows = document.querySelectorAll("tbody tr");
 
     rows.forEach(function(row) {
-
         let customer = row.cells[1].textContent.toLowerCase();
 
         if (customer.includes(input)) {
@@ -118,9 +115,7 @@ function searchTable() {
         } else {
             row.style.display = "none";
         }
-
     });
-
 }
 </script>
 
