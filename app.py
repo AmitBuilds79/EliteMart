@@ -662,14 +662,17 @@ def admin_orders():
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT
-            orders.*,
-            users.full_name
-        FROM orders
-        JOIN users
-        ON orders.user_id = users.id
-        ORDER BY orders.id DESC
-    """)
+SELECT
+    orders.id,
+    users.full_name,
+    orders.total_amount AS total,
+    orders.order_status AS status,
+    orders.order_date
+FROM orders
+JOIN users
+ON orders.user_id = users.id
+ORDER BY orders.id DESC
+""")
 
     orders = cursor.fetchall()
 
