@@ -595,7 +595,9 @@ def delete_user(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    cursor.execute("DELETE FROM orders WHERE user_id=%s", (user_id,))
     cursor.execute("DELETE FROM users WHERE id=%s", (user_id,))
+
     conn.commit()
 
     cursor.close()
