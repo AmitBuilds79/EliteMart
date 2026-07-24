@@ -1,4 +1,5 @@
 import os
+from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, session
 from config import get_db_connection
 import mysql.connector
@@ -568,7 +569,6 @@ ON products.category_id = categories.id
     conn.close()
 
     return render_template("admin_products.html", products=products)
-
 @app.route("/admin/add_product", methods=["GET", "POST"])
 def add_product():
 
@@ -585,14 +585,19 @@ def add_product():
         name = request.form["name"]
         price = request.form["price"]
         stock = request.form["stock"]
-        image = request.form["image"]
+
+        image = request.files["image"]
+        filename = secure_filename(image.filename)
+
+        if filename:
+            image.save(os.path.join("static", "images", filename))
 
         cursor = conn.cursor()
 
         cursor.execute("""
             INSERT INTO products(product_name, category_id, description, price, stock, image)
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (name, category_id, "", price, stock, image))
+        """, (name, category_id, "", price, stock, filename))
 
         conn.commit()
 
@@ -605,6 +610,65 @@ def add_product():
     conn.close()
 
     return render_template("add_product.html", categories=categories)
+
+@app.route("/admin/edit_product/<int:id>", methods=["GET", "POST"])
+def edit_product(id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == "POST":
+
+        category_id = request.form["category_id"]
+        name = request.form["name"]
+        price = request.form["price"]
+        stock = request.form["stock"]
+
+        cursor.execute("""
+            UPDATE products
+            SET product_name=%s,
+                category_id=%s,
+                price=%s,
+                stock=%s
+            WHERE id=%s
+        """, (name, category_id, price, stock, id))
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for("admin_products"))
+
+    cursor.execute("SELECT * FROM products WHERE id=%s", (id,))
+    product = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM categories")
+    categories = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "edit_product.html",
+        product=product,
+        categories=categories
+    )
+
+@app.route("/admin/delete_product/<int:id>")
+def delete_product(id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM products WHERE id=%s", (id,))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("admin_products"))
 
 @app.route("/add_to_wishlist/<int:product_id>")
 def add_to_wishlist(product_id):
