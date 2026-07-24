@@ -681,6 +681,27 @@ ORDER BY orders.id DESC
 
     return render_template("admin_orders.html", orders=orders)
 
+@app.route("/admin/update_order/<int:id>", methods=["POST"])
+def update_order(id):
+
+    status = request.form["status"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE orders
+        SET order_status = %s
+        WHERE id = %s
+    """, (status, id))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("admin_orders"))
+
 @app.route("/admin/delete_product/<int:id>")
 def delete_product(id):
 

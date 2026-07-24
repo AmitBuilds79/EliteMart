@@ -47,14 +47,36 @@
 
 <td>
 
-{% if order.status=="Pending" %}
-<span class="badge bg-warning">Pending</span>
-{% else %}
-<span class="badge bg-success">{{ order.status }}</span>
-{% endif %}
+<form method="POST" action="/admin/update_order/{{ order.id }}">
+
+<select name="status" class="form-select">
+
+<option value="Pending"
+{% if order.status=="Pending" %}selected{% endif %}>
+Pending
+</option>
+
+<option value="Shipped"
+{% if order.status=="Shipped" %}selected{% endif %}>
+Shipped
+</option>
+
+<option value="Delivered"
+{% if order.status=="Delivered" %}selected{% endif %}>
+Delivered
+</option>
+
+</select>
+
+<br>
+
+<button class="btn btn-success btn-sm">
+Update
+</button>
+
+</form>
 
 </td>
-
 <td>{{ order.order_date }}</td>
 
 </tr>
