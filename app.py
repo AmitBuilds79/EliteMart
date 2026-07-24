@@ -671,7 +671,7 @@ SELECT
 FROM orders
 JOIN users
 ON orders.user_id = users.id
-ORDER BY orders.id DESC
+ORDER BY orders.id DESCgit
 """)
 
     orders = cursor.fetchall()
@@ -684,7 +684,11 @@ ORDER BY orders.id DESC
 @app.route("/admin/update_order/<int:id>", methods=["POST"])
 def update_order(id):
 
+    print("Update route called")
+
     status = request.form["status"]
+    print("Status =", status)
+    print("Order ID =", id)
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -696,6 +700,7 @@ def update_order(id):
     """, (status, id))
 
     conn.commit()
+    print(cursor.rowcount)
 
     cursor.close()
     conn.close()
