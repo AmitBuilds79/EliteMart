@@ -423,10 +423,10 @@ def checkout():
 
         # Create Order
         cursor.execute("""
-            INSERT INTO orders
-            (user_id,total_amount,order_status,payment_status)
-            VALUES (%s,%s,'Pending','Pending')
-        """, (user["id"], total))
+    INSERT INTO orders
+    (user_id, total, status)
+    VALUES (%s, %s, 'Pending')
+""", (user["id"], total))
 
         conn.commit()
 
@@ -654,6 +654,29 @@ def edit_product(id):
         product=product,
         categories=categories
     )
+
+@app.route("/admin/orders")
+def admin_orders():
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            orders.*,
+            users.full_name
+        FROM orders
+        JOIN users
+        ON orders.user_id = users.id
+        ORDER BY orders.id DESC
+    """)
+
+    orders = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("admin_orders.html", orders=orders)
 
 @app.route("/admin/delete_product/<int:id>")
 def delete_product(id):
