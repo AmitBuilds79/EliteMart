@@ -569,6 +569,26 @@ ON products.category_id = categories.id
     conn.close()
 
     return render_template("admin_products.html", products=products)
+
+@app.route("/admin/users")
+def admin_users():
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT id, full_name, email
+        FROM users
+        ORDER BY id DESC
+    """)
+
+    users = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("admin_users.html", users=users)
+
 @app.route("/admin/add_product", methods=["GET", "POST"])
 def add_product():
 
