@@ -28,6 +28,7 @@
     <th>ID</th>
     <th>Name</th>
     <th>Email</th>
+    <th>Action</th>
 </tr>
 </thead>
 
@@ -39,6 +40,13 @@
     <td>{{ user.id }}</td>
     <td>{{ user.full_name }}</td>
     <td>{{ user.email }}</td>
+    <td>
+    <a href="/admin/delete_user/{{ user.id }}"
+       class="btn btn-danger btn-sm"
+       onclick="return confirm('Delete this user?')">
+       Delete
+    </a>
+</td>
 </tr>
 
 {% endfor %}

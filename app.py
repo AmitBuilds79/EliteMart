@@ -589,6 +589,20 @@ def admin_users():
 
     return render_template("admin_users.html", users=users)
 
+@app.route("/admin/delete_user/<int:user_id>")
+def delete_user(user_id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM users WHERE id=%s", (user_id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect("/admin/users")
+
 @app.route("/admin/add_product", methods=["GET", "POST"])
 def add_product():
 
