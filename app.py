@@ -660,6 +660,7 @@ def admin_orders():
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
+    print("Reading orders from database...")
 
     cursor.execute("""
 SELECT
