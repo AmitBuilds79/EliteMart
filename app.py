@@ -676,6 +676,8 @@ ORDER BY orders.id DESC
 
     orders = cursor.fetchall()
 
+    print(orders)
+
     cursor.close()
     conn.close()
 
