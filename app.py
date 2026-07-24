@@ -671,7 +671,7 @@ SELECT
 FROM orders
 JOIN users
 ON orders.user_id = users.id
-ORDER BY orders.id DESCgit
+ORDER BY orders.id DESC
 """)
 
     orders = cursor.fetchall()
