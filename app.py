@@ -102,9 +102,9 @@ def add_review(product_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO reviews (product_id, username, rating, review)
-        VALUES (%s, %s, %s, %s)
-    """, (product_id, username, rating, review))
+INSERT INTO reviews (product_id, user_name, rating, comment)
+VALUES (%s, %s, %s, %s)
+""", (product_id, username, rating, review))
 
     conn.commit()
     cursor.close()
