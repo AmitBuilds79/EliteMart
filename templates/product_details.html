@@ -136,41 +136,7 @@
 
     </form>
 
-    <hr class="my-5">
-
-   
-
-    {% if reviews %}
-
-        {% for review in reviews %}
-
-        <div class="card shadow-sm border-0 mb-3">
-
-            <div class="card-body">
-
-                <h5 class="mb-1">
-                    {{ review.username }}
-                </h5>
-
-                <p class="text-warning mb-2">
-                    ⭐ {{ review.rating }}/5
-                </p>
-
-                <p class="text-muted">
-                    {{ review.review }}
-                </p>
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
-    {% else %}
-
-        <div class="alert alert-info">
-            No reviews yet.
-        </div>
+    
 
     {% endif %}
 
