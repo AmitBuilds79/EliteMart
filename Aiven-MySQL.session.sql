@@ -1,5 +1,5 @@
-DESCRIBE reviews;
-ALTER TABLE orders
-ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'Pending';
 
-DESCRIBE orders;
+
+SELECT id, status
+FROM orders
+ORDER BY id DESC;

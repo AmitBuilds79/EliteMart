@@ -547,7 +547,32 @@ def order_details(order_id):
 
 @app.route("/admin")
 def admin_dashboard():
-    return render_template("admin_dashboard.html")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM users")
+    users = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM products")
+    products = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM orders")
+    orders = cursor.fetchone()[0]
+
+    cursor.execute("SELECT SUM(total_amount) FROM orders")
+    revenue = cursor.fetchone()[0] or 0
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "admin_dashboard.html",
+        users=users,
+        products=products,
+        orders=orders,
+        revenue=revenue
+    )
 
 @app.route("/admin/products")
 def admin_products():

@@ -10,50 +10,69 @@
 
 <div class="container mt-5">
 
-    <h1 class="text-center mb-4">Admin Dashboard</h1>
+<h2 class="text-center mb-4">🛠 Admin Dashboard</h2>
 
-    <div class="row">
+<div class="row">
 
-        <div class="col-md-4 mb-3">
-            <div class="card bg-primary text-white shadow">
-                <div class="card-body">
-                    <h4>📦 Products</h4>
-                    <a href="/admin/products" class="btn btn-light mt-2">
-                        Manage Products
-                    </a>
-                </div>
-            </div>
-        </div>
+<div class="col-md-3">
+<div class="card text-white bg-primary shadow">
+<div class="card-body">
+<h3>{{ users }}</h3>
+<p>Total Users</p>
+</div>
+</div>
+</div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card bg-success text-white shadow">
-                <div class="card-body">
-                    <h4>🛒 Orders</h4>
-                    <a href="/admin/orders" class="btn btn-light mt-2">
-                        Manage Orders
-                    </a>
-                </div>
-            </div>
-        </div>
+<div class="col-md-3">
+<div class="card text-white bg-success shadow">
+<div class="card-body">
+<h3>{{ products }}</h3>
+<p>Total Products</p>
+</div>
+</div>
+</div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card bg-warning shadow">
-                <div class="card-body">
-                    <h4>👥 Users</h4>
-                    <a href="/admin/users" class="btn btn-dark mt-2">
-                        Manage Users
-                    </a>
-                </div>
-            </div>
-        </div>
+<div class="col-md-3">
+<div class="card text-white bg-warning shadow">
+<div class="card-body">
+<h3>{{ orders }}</h3>
+<p>Total Orders</p>
+</div>
+</div>
+</div>
 
-    </div>
+<div class="col-md-3">
+<div class="card text-white bg-danger shadow">
+<div class="card-body">
+<h3>₹{{ revenue }}</h3>
+<p>Total Revenue</p>
+</div>
+</div>
+</div>
 
-    <div class="text-center mt-4">
-        <a href="/home" class="btn btn-secondary">
-            ⬅ Back to Home
-        </a>
-    </div>
+</div>
+
+<hr class="my-4">
+
+<div class="d-grid gap-3">
+
+<a href="/admin/products" class="btn btn-primary">
+📦 Manage Products
+</a>
+
+<a href="/admin/orders" class="btn btn-success">
+🛒 Manage Orders
+</a>
+
+<a href="/admin/users" class="btn btn-dark">
+👤 Manage Users
+</a>
+
+<a href="/" class="btn btn-secondary">
+🏠 Back to Website
+</a>
+
+</div>
 
 </div>
 
