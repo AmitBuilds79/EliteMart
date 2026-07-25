@@ -104,6 +104,36 @@
             Submit Review
         </button>
 
+        <hr class="my-5">
+
+<h3 class="fw-bold mb-4">⭐ Customer Reviews</h3>
+
+{% if reviews %}
+    {% for r in reviews %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <h5 class="mb-1">
+                {{ r.user_name }}
+            </h5>
+
+            <div class="text-warning mb-2">
+                {% for i in range(r.rating) %}
+                    ⭐
+                {% endfor %}
+            </div>
+
+            <p>{{ r.comment }}</p>
+
+            <small class="text-muted">
+                {{ r.created_at }}
+            </small>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted">No reviews yet.</p>
+{% endif %}
+
     </form>
 
     <hr class="my-5">
