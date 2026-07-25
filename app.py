@@ -112,6 +112,24 @@ VALUES (%s, %s, %s, %s)
 
     return redirect(f"/product/{product_id}")
 
+@app.route("/delete_review/<int:review_id>/<int:product_id>", methods=["POST"])
+def delete_review(review_id, product_id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM reviews WHERE id=%s",
+        (review_id,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("product_details", product_id=product_id))
+
 @app.route("/search")
 def search():
     query = request.args.get("q", "")
