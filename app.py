@@ -130,6 +130,79 @@ def delete_review(review_id, product_id):
 
     return redirect(url_for("product_details", product_id=product_id))
 
+@app.route("/add_to_wishlist/<int:product_id>")
+def add_to_wishlist(product_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM wishlist WHERE user_id=%s AND product_id=%s",
+        (session["user_id"], product_id)
+    )
+
+    item = cursor.fetchone()
+
+    if not item:
+        cursor.execute(
+            "INSERT INTO wishlist(user_id, product_id) VALUES(%s,%s)",
+            (session["user_id"], product_id)
+        )
+        conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("product_details", product_id=product_id))
+
+@app.route("/wishlist")
+def wishlist():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT products.*
+        FROM wishlist
+        JOIN products
+        ON wishlist.product_id = products.id
+        WHERE wishlist.user_id=%s
+    """, (session["user_id"],))
+
+    products = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("wishlist.html", products=products)
+
+@app.route("/remove_from_wishlist/<int:product_id>")
+def remove_from_wishlist(product_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM wishlist WHERE user_id=%s AND product_id=%s",
+        (session["user_id"], product_id)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("wishlist"))
+
 @app.route("/search")
 def search():
     query = request.args.get("q", "")
@@ -805,35 +878,7 @@ def delete_product(id):
 
     return redirect(url_for("admin_products"))
 
-@app.route("/add_to_wishlist/<int:product_id>")
-def add_to_wishlist(product_id):
 
-    user_id = session.get("user_id")
-
-    if not user_id:
-        return redirect("/login")
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT * FROM wishlist WHERE user_id=%s AND product_id=%s",
-        (user_id, product_id)
-    )
-
-    item = cursor.fetchone()
-
-    if not item:
-        cursor.execute(
-            "INSERT INTO wishlist (user_id, product_id) VALUES (%s, %s)",
-            (user_id, product_id)
-        )
-        conn.commit()
-
-    cursor.close()
-    conn.close()
-
-    return redirect(f"/product/{product_id}")
 
 if __name__ == "__main__":
     app.run(debug=True)
