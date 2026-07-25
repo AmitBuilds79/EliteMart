@@ -704,7 +704,7 @@ SELECT
     orders.id,
     users.full_name,
     orders.total_amount AS total,
-    orders.order_status AS status,
+    orders.status,
     orders.order_date
 FROM orders
 JOIN users
@@ -735,7 +735,7 @@ def update_order(id):
 
     cursor.execute("""
         UPDATE orders
-        SET order_status = %s
+        SET status = %s
         WHERE id = %s
     """, (status, id))
 
