@@ -517,7 +517,6 @@ def checkout():
 
         # Stock Check
         for item in cart_items:
-
             if item["stock"] < item["quantity"]:
                 cursor.close()
                 conn.close()
@@ -525,13 +524,11 @@ def checkout():
 
         # Create Order
         cursor.execute("""
-INSERT INTO orders
-(user_id, total_amount, status)
-VALUES (%s, %s, 'Pending')
-""", (user["id"], total))
+            INSERT INTO orders (user_id, total_amount, status)
+            VALUES (%s, %s, 'Pending')
+        """, (user["id"], total))
 
         conn.commit()
-
         order_id = cursor.lastrowid
 
         # Save Order Items & Reduce Stock
@@ -539,46 +536,43 @@ VALUES (%s, %s, 'Pending')
 
             cursor.execute("""
                 INSERT INTO order_items
-                (order_id,product_id,quantity,price)
-                VALUES (%s,%s,%s,%s)
+                (order_id, product_id, quantity, price)
+                VALUES (%s, %s, %s, %s)
             """, (
                 order_id,
                 item["product_id"],
                 item["quantity"],
                 item["price"]
             ))
-            print("Reducing stock:", item["product_id"], item["quantity"])
 
-            # Reduce Stock
             cursor.execute("""
                 UPDATE products
                 SET stock = stock - %s
-                WHERE id=%s
+                WHERE id = %s
             """, (
                 item["quantity"],
                 item["product_id"]
             ))
 
-            print("Rows Updated:", cursor.rowcount)
-
         conn.commit()
 
-      # Get customer email
+        # Get Customer Email
         cursor.execute(
             "SELECT email, full_name FROM users WHERE id=%s",
             (user["id"],)
         )
+
         customer = cursor.fetchone()
-        print(customer)
-        print(customer["email"])
 
-        # Send Order Confirmation Email
-        msg = Message(
-            subject="EliteMart - Order Confirmation",
-            recipients=[customer["email"]]
-        )
+        # Send Email
+        if customer and customer["email"]:
 
-        msg.body = f"""
+            msg = Message(
+                subject="EliteMart - Order Confirmation",
+                recipients=[customer["email"]]
+            )
+
+            msg.body = f"""
 Hello {customer['full_name']},
 
 Thank you for shopping with EliteMart!
@@ -598,11 +592,12 @@ Thank you,
 EliteMart Team
 """
 
-    try:
-        mail.send(msg)
-        print("Order confirmation email sent.")
-    except Exception as e:
-        print("Email Error:",str(e))
+            try:
+                mail.send(msg)
+                print("Order confirmation email sent.")
+            except Exception as e:
+                print("Email Error:", e)
+
         # Empty Cart
         cursor.execute(
             "DELETE FROM cart WHERE user_id=%s",
@@ -628,8 +623,6 @@ EliteMart Team
         "checkout.html",
         total=total
     )
-
-
 @app.route("/my_orders")
 def my_orders():
 
