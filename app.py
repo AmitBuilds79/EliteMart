@@ -569,6 +569,8 @@ VALUES (%s, %s, 'Pending')
             (user["id"],)
         )
         customer = cursor.fetchone()
+        print(customer)
+        print(customer["email"])
 
         # Send Order Confirmation Email
         msg = Message(
@@ -596,11 +598,11 @@ Thank you,
 EliteMart Team
 """
 
-        # try:
-#     mail.send(msg)
-#     print("Order confirmation email sent.")
-# except Exception as e:
-#     print("Email Error:", e)
+    try:
+        mail.send(msg)
+        print("Order confirmation email sent.")
+    except Exception as e:
+        print("Email Error:",str(e))
         # Empty Cart
         cursor.execute(
             "DELETE FROM cart WHERE user_id=%s",
