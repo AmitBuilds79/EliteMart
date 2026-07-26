@@ -596,12 +596,11 @@ Thank you,
 EliteMart Team
 """
 
-        try:
-            mail.send(msg)
-            print("Order confirmation email sent.")
-        except Exception as e:
-            print("Email Error:", e)
-
+        # try:
+#     mail.send(msg)
+#     print("Order confirmation email sent.")
+# except Exception as e:
+#     print("Email Error:", e)
         # Empty Cart
         cursor.execute(
             "DELETE FROM cart WHERE user_id=%s",
