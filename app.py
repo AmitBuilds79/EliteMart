@@ -3,9 +3,18 @@ from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, session
 from config import get_db_connection
 import mysql.connector
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.secret_key = "elite123"
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'roastmass79@gmail.com'
+app.config['MAIL_PASSWORD'] = 'cynmylngzmszvrms'
+app.config['MAIL_DEFAULT_SENDER'] = 'roastmass79@gmail.com'
+
+mail = Mail(app)
 
 
 print("DB_HOST =", os.environ.get("DB_HOST"))
@@ -514,9 +523,9 @@ def checkout():
 
         # Create Order
         cursor.execute("""
-    INSERT INTO orders
-    (user_id, total, status)
-    VALUES (%s, %s, 'Pending')
+INSERT INTO orders
+(user_id, total_amount, status)
+VALUES (%s, %s, 'Pending')
 """, (user["id"], total))
 
         conn.commit()
@@ -551,6 +560,45 @@ def checkout():
             print("Rows Updated:", cursor.rowcount)
 
         conn.commit()
+
+        # Get customer email
+        cursor.execute(
+            "SELECT email, full_name FROM users WHERE id=%s",
+            (user["id"],)
+        )
+        customer = cursor.fetchone()
+
+        # Send Order Confirmation Email
+        msg = Message(
+            subject="EliteMart - Order Confirmation",
+            recipients=[customer["email"]]
+        )
+
+        msg.body = f"""
+Hello {customer['full_name']},
+
+Thank you for shopping with EliteMart!
+
+Your Order ID: {order_id}
+Total Amount: ₹{total}
+
+Delivery Address:
+{address}
+
+Payment Method:
+{payment}
+
+Your order has been placed successfully.
+
+Thank you,
+EliteMart Team
+"""
+
+        try:
+            mail.send(msg)
+            print("Order confirmation email sent.")
+        except Exception as e:
+            print("Email Error:", e)
 
         # Empty Cart
         cursor.execute(
