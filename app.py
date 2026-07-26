@@ -563,7 +563,7 @@ VALUES (%s, %s, 'Pending')
 
         conn.commit()
 
-        # Get customer email
+      # Get customer email
         cursor.execute(
             "SELECT email, full_name FROM users WHERE id=%s",
             (user["id"],)
