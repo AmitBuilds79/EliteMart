@@ -593,7 +593,9 @@ EliteMart Team
 """
 
             try:
+                print("before mail.send")
                 mail.send(msg)
+                print("after mail.send")
                 print("Order confirmation email sent.")
             except Exception as e:
                 print("Email Error:", e)
