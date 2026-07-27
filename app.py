@@ -25,8 +25,8 @@ mail = Mail(app)
 
 client = razorpay.Client(
     auth=(
-        os.getenv("rzp_test_TIOuKK56wp82Wn"),
-        os.getenv("6xzrKHR0vpOSRx0dkMc3Jwx2")
+        os.getenv("RAZORPAY_KEY_ID"),
+        os.getenv("RAZORPAY_KEY_SECRET")
     )
 )
 print(app.config["MAIL_SERVER"])
