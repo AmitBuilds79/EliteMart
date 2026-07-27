@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from config import get_db_connection
 import mysql.connector
 from flask_mail import Mail, Message
+import razorpay
 
 app = Flask(__name__)
 app.secret_key = "elite123"
@@ -17,7 +18,17 @@ app.config['MAIL_PASSWORD'] = 'cynmylngzmszvrms'
 app.config['MAIL_DEFAULT_SENDER'] = 'roastmass79@gmail.com'
 app.config['MAIL_TIMEOUT'] = 10
 
+
 mail = Mail(app)
+
+
+
+client = razorpay.Client(
+    auth=(
+        os.getenv("rzp_test_TIO9J8UU3TEi8D"),
+        os.getenv("ZTAZ1V01j48INOF12vcgDH6g")
+    )
+)
 print(app.config["MAIL_SERVER"])
 print(app.config["MAIL_PORT"])
 print(app.config["MAIL_USERNAME"])
