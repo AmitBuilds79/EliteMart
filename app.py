@@ -487,7 +487,6 @@ def decrease_quantity(cart_id):
     conn.close()
 
     return redirect(url_for("cart"))
-
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
 
@@ -497,14 +496,12 @@ def checkout():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True, buffered=True)
 
-    # Logged in user
     cursor.execute(
         "SELECT id FROM users WHERE full_name=%s",
         (session["user"],)
     )
     user = cursor.fetchone()
 
-    # Cart Items
     cursor.execute("""
         SELECT
             products.id AS product_id,
@@ -520,107 +517,19 @@ def checkout():
 
     cart_items = cursor.fetchall()
 
-    total = 0
-    for item in cart_items:
-        total += item["price"] * item["quantity"]
+    total = sum(item["price"] * item["quantity"] for item in cart_items)
+
+    # Razorpay Order
+    razorpay_order = client.order.create({
+        "amount": int(total * 100),
+        "currency": "INR",
+        "payment_capture": 1
+    })
 
     if request.method == "POST":
 
         address = request.form["address"]
         payment = request.form["payment"]
-
-        # Stock Check
-        for item in cart_items:
-            if item["stock"] < item["quantity"]:
-                cursor.close()
-                conn.close()
-                return f'{item["product_name"]} is Out of Stock'
-
-        # Create Order
-        cursor.execute("""
-            INSERT INTO orders (user_id, total_amount, status)
-            VALUES (%s, %s, 'Pending')
-        """, (user["id"], total))
-
-        conn.commit()
-        order_id = cursor.lastrowid
-
-        # Save Order Items & Reduce Stock
-        for item in cart_items:
-
-            cursor.execute("""
-                INSERT INTO order_items
-                (order_id, product_id, quantity, price)
-                VALUES (%s, %s, %s, %s)
-            """, (
-                order_id,
-                item["product_id"],
-                item["quantity"],
-                item["price"]
-            ))
-
-            cursor.execute("""
-                UPDATE products
-                SET stock = stock - %s
-                WHERE id = %s
-            """, (
-                item["quantity"],
-                item["product_id"]
-            ))
-
-        conn.commit()
-
-        # Get Customer Email
-        cursor.execute(
-            "SELECT email, full_name FROM users WHERE id=%s",
-            (user["id"],)
-        )
-
-        customer = cursor.fetchone()
-
-        # Send Email
-        if customer and customer["email"]:
-
-            msg = Message(
-                subject="EliteMart - Order Confirmation",
-                recipients=[customer["email"]]
-            )
-
-            msg.body = f"""
-Hello {customer['full_name']},
-
-Thank you for shopping with EliteMart!
-
-Your Order ID: {order_id}
-Total Amount: ₹{total}
-
-Delivery Address:
-{address}
-
-Payment Method:
-{payment}
-
-Your order has been placed successfully.
-
-Thank you,
-EliteMart Team
-"""
-
-            try:
-                print("before mail.send")
-            #    mail.send(msg)
-                print("after mail.send")
-                print("Order confirmation email sent.")
-            except Exception as e:
-                print("Email Error:", e)
-
-        # Empty Cart
-        cursor.execute(
-            "DELETE FROM cart WHERE user_id=%s",
-            (user["id"],)
-        )
-
-        conn.commit()
 
         cursor.close()
         conn.close()
@@ -635,18 +544,12 @@ EliteMart Team
     cursor.close()
     conn.close()
 
-    razorpay_order = client.order.create({
-    "amount": int(total * 100),   # Amount in paise
-    "currency": "INR",
-    "payment_capture": 1
-})
-
-    return render_template(   
-    "checkout.html",
-    total=total,
-    razorpay_order=razorpay_order,
-    razorpay_key=os.getenv("RAZORPAY_KEY_ID")
-)
+    return render_template(
+        "checkout.html",
+        total=total,
+        razorpay_order=razorpay_order,
+        razorpay_key=os.getenv("RAZORPAY_KEY_ID")
+    )
 @app.route("/my_orders")
 def my_orders():
 

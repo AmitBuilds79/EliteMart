@@ -9,7 +9,7 @@
 
     <h4>Total Amount: ₹{{ total }}</h4>
 
-    <form method="POST">
+    <form method="POST" id="checkoutForm">
 
         <div class="mb-3">
             <label>Delivery Address</label>
@@ -25,38 +25,9 @@
             </select>
         </div>
 
-        <button class="btn btn-success">
+        <button type="submit" class="btn btn-success">
             Place Order
         </button>
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<script>
-var options = {
-    "key": "{{ razorpay_key }}",
-    "amount": "{{ razorpay_order.amount }}",
-    "currency": "INR",
-    "name": "EliteMart",
-    "description": "Order Payment",
-    "order_id": "{{ razorpay_order.id }}",
-
-    "handler": function (response) {
-        alert("Payment Successful\nPayment ID: " + response.razorpay_payment_id);
-    }
-};
-
-var rzp = new Razorpay(options);
-
-document.querySelector("form").addEventListener("submit", function(e) {
-
-    var payment = document.querySelector("[name='payment']").value;
-
-    if(payment == "Online"){
-        e.preventDefault();
-        rzp.open();
-    }
-
-});
-</script>
 
     </form>
 
@@ -65,16 +36,36 @@ document.querySelector("form").addEventListener("submit", function(e) {
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-document.querySelector("form").addEventListener("submit", function(e) {
+
+var options = {
+    key: "{{ razorpay_key }}",
+    amount: "{{ razorpay_order.amount }}",
+    currency: "INR",
+    name: "EliteMart",
+    description: "Order Payment",
+    order_id: "{{ razorpay_order.id }}",
+
+    handler: function (response) {
+        alert("Payment Successful!");
+
+        // Payment hone ke baad form submit hoga
+        document.getElementById("checkoutForm").submit();
+    }
+};
+
+var rzp = new Razorpay(options);
+
+document.getElementById("checkoutForm").addEventListener("submit", function(e){
 
     var payment = document.querySelector("[name='payment']").value;
 
-    if (payment === "Online") {
+    if(payment === "Online"){
         e.preventDefault();
-        alert("Razorpay integration will be added in the next step.");
+        rzp.open();
     }
 
 });
+
 </script>
 
 {% endblock %}
