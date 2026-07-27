@@ -18,6 +18,9 @@ app.config['MAIL_DEFAULT_SENDER'] = 'roastmass79@gmail.com'
 app.config['MAIL_TIMEOUT'] = 10
 
 mail = Mail(app)
+print(app.config["MAIL_SERVER"])
+print(app.config["MAIL_PORT"])
+print(app.config["MAIL_USERNAME"])
 
 print("DB_HOST =", os.environ.get("DB_HOST"))
 print("DB_PORT =", os.environ.get("DB_PORT"))
