@@ -25,8 +25,8 @@ mail = Mail(app)
 
 client = razorpay.Client(
     auth=(
-        os.getenv("rzp_test_TIO9J8UU3TEi8D"),
-        os.getenv("ZTAZ1V01j48INOF12vcgDH6g")
+        os.getenv("rzp_test_TIOuKK56wp82Wn"),
+        os.getenv("6xzrKHR0vpOSRx0dkMc3Jwx2")
     )
 )
 print(app.config["MAIL_SERVER"])
@@ -635,10 +635,18 @@ EliteMart Team
     cursor.close()
     conn.close()
 
-    return render_template(
-        "checkout.html",
-        total=total
-    )
+    razorpay_order = client.order.create({
+    "amount": int(total * 100),   # Amount in paise
+    "currency": "INR",
+    "payment_capture": 1
+})
+
+    return render_template(   
+    "checkout.html",
+    total=total,
+    razorpay_order=razorpay_order,
+    razorpay_key=os.getenv("RAZORPAY_KEY_ID")
+)
 @app.route("/my_orders")
 def my_orders():
 
