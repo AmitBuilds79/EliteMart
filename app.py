@@ -8,7 +8,7 @@ import razorpay
 from flask import flash
 from flask import abort
 from flask_login import login_required, current_user
-from config import ADMIN_EMAILpip 
+from config import ADMIN_EMAIL
 from config import get_db_connection, ADMIN_EMAIL
 
 app = Flask(__name__)
