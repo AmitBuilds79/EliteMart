@@ -213,8 +213,8 @@ Featured Products
     </button>
 </div>
 
-        <a href="{{ url_for('product_details', product_id=product.id) }}"
-           class="text-decoration-none text-dark">
+        <a href="{{ url_for('buy_now', product_id=product.id) }}"
+   class="text-decoration-none text-dark">
 
             <img src="{{ url_for('static', filename='images/' + product.image) }}"
                  class="card-img-top"

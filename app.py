@@ -113,6 +113,30 @@ def product_details(product_id):
         rating_data=rating_data
     )
 
+@app.route("/buy_now/<int:product_id>")
+def buy_now(product_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO cart (user_id, product_id, quantity)
+        SELECT %s, %s, 1
+        WHERE NOT EXISTS (
+            SELECT 1 FROM cart
+            WHERE user_id=%s AND product_id=%s
+        )
+    """, (session["user_id"], product_id, session["user_id"], product_id))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("checkout"))
+
 @app.route("/add_review/<int:product_id>", methods=["POST"])
 def add_review(product_id):
 
