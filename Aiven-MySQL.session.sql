@@ -1,5 +1,2 @@
-
-
- DELETE INTO categories (category_name) VALUES
-('Perfumes'),
-('Bags');
+SELECT product_name, image
+FROM products;
