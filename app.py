@@ -7,9 +7,6 @@ from flask_mail import Mail, Message
 import razorpay
 from flask import flash
 from flask import abort
-from flask_login import login_required, current_user
-from config import ADMIN_EMAIL
-from config import get_db_connection, ADMIN_EMAIL
 
 app = Flask(__name__)
 app.secret_key = "elite123"
@@ -341,7 +338,7 @@ def login():
         if user:
             session["user_id"] = user["id"]          
             session["user"] = user["full_name"]
-                
+            session["email"] = user["email"]    
             return redirect(url_for("home"))
 
         else:
@@ -643,16 +640,18 @@ def order_details(order_id):
 
     return render_template("order_details.html", items=items)
 
+from flask import session, abort
+
 def admin_required():
-    if not current_user.is_authenticated:
+    if "user_id" not in session:
         abort(401)
 
-    if current_user.email != ADMIN_EMAIL:
+    if session.get("email") != "testilite1234@gmail.com":
         abort(403)
 
 @app.route("/admin")
-@login_required
 def admin_dashboard():
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -681,8 +680,8 @@ def admin_dashboard():
     )
 
 @app.route("/admin/products")
-@login_required
 def admin_products():
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -703,8 +702,8 @@ ON products.category_id = categories.id
     return render_template("admin_products.html", products=products)
 
 @app.route("/admin/users")
-@login_required
 def admin_users():
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -723,8 +722,8 @@ def admin_users():
     return render_template("admin_users.html", users=users)
 
 @app.route("/admin/delete_user/<int:user_id>")
-@login_required
 def delete_user(user_id):
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -741,8 +740,8 @@ def delete_user(user_id):
     return redirect("/admin/users")
 
 @app.route("/admin/add_product", methods=["GET", "POST"])
-@login_required
 def add_product():
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -784,8 +783,8 @@ def add_product():
     return render_template("add_product.html", categories=categories)
 
 @app.route("/admin/edit_product/<int:id>", methods=["GET", "POST"])
-@login_required
 def edit_product(id):
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -829,8 +828,8 @@ def edit_product(id):
     )
 
 @app.route("/admin/orders")
-@login_required
 def admin_orders():
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -859,8 +858,8 @@ ORDER BY orders.id DESC
     return render_template("admin_orders.html", orders=orders)
 
 @app.route("/admin/update_order/<int:id>", methods=["POST"])
-@login_required
 def update_order(id):
+    admin_required()
 
     print("Update route called")
 
@@ -886,8 +885,8 @@ def update_order(id):
     return redirect(url_for("admin_orders"))
 
 @app.route("/admin/delete_product/<int:id>")
-@login_required
 def delete_product(id):
+    admin_required()
 
     conn = get_db_connection()
     cursor = conn.cursor()
