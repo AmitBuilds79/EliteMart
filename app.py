@@ -5,6 +5,7 @@ from config import get_db_connection
 import mysql.connector
 from flask_mail import Mail, Message
 import razorpay
+from flask import flash
 
 app = Flask(__name__)
 app.secret_key = "elite123"
@@ -342,17 +343,24 @@ def add_to_cart(product_id):
     )
     user = cursor.fetchone()
 
-    # Product stock check
+    # Product name + stock
     cursor.execute(
-        "SELECT stock FROM products WHERE id=%s",
+        "SELECT product_name, stock FROM products WHERE id=%s",
         (product_id,)
     )
     product = cursor.fetchone()
 
+    if not product:
+        cursor.close()
+        conn.close()
+        flash("Product not found!", "danger")
+        return redirect(url_for("home"))
+
     if product["stock"] <= 0:
         cursor.close()
         conn.close()
-        return "Product is Out of Stock!"
+        flash(f"{product['product_name']} is Out of Stock!", "danger")
+        return redirect(url_for("home"))
 
     # Check if product already exists in cart
     cursor.execute("""
@@ -377,12 +385,12 @@ def add_to_cart(product_id):
             VALUES (%s, %s, 1)
         """, (user["id"], product_id))
 
-
     conn.commit()
 
     cursor.close()
     conn.close()
 
+    flash(f"✅ {product['product_name']} has been added to your cart successfully!", "success")
     return redirect(url_for("home"))
 
 @app.route("/cart")
