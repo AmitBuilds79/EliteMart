@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import mysql.connector
 
 load_dotenv()
+ADMIN_EMAIL = "testelite1234@gmail.com"
 
 def get_db_connection():
     return mysql.connector.connect(

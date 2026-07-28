@@ -6,6 +6,10 @@ import mysql.connector
 from flask_mail import Mail, Message
 import razorpay
 from flask import flash
+from flask import abort
+from flask_login import login_required, current_user
+from config import ADMIN_EMAILpip 
+from config import get_db_connection, ADMIN_EMAIL
 
 app = Flask(__name__)
 app.secret_key = "elite123"
@@ -639,7 +643,15 @@ def order_details(order_id):
 
     return render_template("order_details.html", items=items)
 
+def admin_required():
+    if not current_user.is_authenticated:
+        abort(401)
+
+    if current_user.email != ADMIN_EMAIL:
+        abort(403)
+
 @app.route("/admin")
+@login_required
 def admin_dashboard():
 
     conn = get_db_connection()
@@ -669,6 +681,7 @@ def admin_dashboard():
     )
 
 @app.route("/admin/products")
+@login_required
 def admin_products():
 
     conn = get_db_connection()
@@ -690,6 +703,7 @@ ON products.category_id = categories.id
     return render_template("admin_products.html", products=products)
 
 @app.route("/admin/users")
+@login_required
 def admin_users():
 
     conn = get_db_connection()
@@ -709,6 +723,7 @@ def admin_users():
     return render_template("admin_users.html", users=users)
 
 @app.route("/admin/delete_user/<int:user_id>")
+@login_required
 def delete_user(user_id):
 
     conn = get_db_connection()
@@ -726,6 +741,7 @@ def delete_user(user_id):
     return redirect("/admin/users")
 
 @app.route("/admin/add_product", methods=["GET", "POST"])
+@login_required
 def add_product():
 
     conn = get_db_connection()
@@ -768,6 +784,7 @@ def add_product():
     return render_template("add_product.html", categories=categories)
 
 @app.route("/admin/edit_product/<int:id>", methods=["GET", "POST"])
+@login_required
 def edit_product(id):
 
     conn = get_db_connection()
@@ -812,6 +829,7 @@ def edit_product(id):
     )
 
 @app.route("/admin/orders")
+@login_required
 def admin_orders():
 
     conn = get_db_connection()
@@ -841,6 +859,7 @@ ORDER BY orders.id DESC
     return render_template("admin_orders.html", orders=orders)
 
 @app.route("/admin/update_order/<int:id>", methods=["POST"])
+@login_required
 def update_order(id):
 
     print("Update route called")
@@ -867,6 +886,7 @@ def update_order(id):
     return redirect(url_for("admin_orders"))
 
 @app.route("/admin/delete_product/<int:id>")
+@login_required
 def delete_product(id):
 
     conn = get_db_connection()
