@@ -1,2 +1,9 @@
-SELECT product_name, image
-FROM products;
+UPDATE products
+SET image='Venti.jpg'
+WHERE product_name='venti';
+UPDATE products
+SET image='Luxora.jpg'
+WHERE product_name='Luxora';
+UPDATE products
+SET image='Virelle.jpg'
+WHERE product_name='Virelle';
