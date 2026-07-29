@@ -644,13 +644,25 @@ def order_details(order_id):
 from flask import session, abort
 
 def admin_required():
-    print(session)
-
     if "user_id" not in session:
         abort(401)
 
-    if session.get("is_admin") != 1:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT is_admin FROM users WHERE id = %s",
+        (session["user_id"],)
+    )
+
+    user = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if not user or user["is_admin"] != 1:
         abort(403)
+        
 @app.route("/admin")
 def admin_dashboard():
     admin_required()
