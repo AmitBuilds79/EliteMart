@@ -1,9 +1,15 @@
-UPDATE products
-SET image='Venti.jpg'
-WHERE product_name='venti';
-UPDATE products
-SET image='Luxora.jpg'
-WHERE product_name='Luxora';
-UPDATE products
-SET image='Virelle.jpg'
-WHERE product_name='Virelle';
+
+
+SELECT DATABASE();
+
+SELECT COUNT(*) AS total_users FROM users;
+
+DESCRIBE users;
+
+
+SELECT id, full_name, email, is_admin
+FROM users;
+
+SELECT id, full_name, email, is_admin
+FROM users
+WHERE id = 3;

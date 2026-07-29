@@ -336,16 +336,17 @@ def login():
         conn.close()
 
         if user:
-            session["user_id"] = user["id"]          
+            session["user_id"] = user["id"]
             session["user"] = user["full_name"]
-            session["email"] = user["email"]    
+            session["email"] = user["email"]
+            session["is_admin"] = user["is_admin"]
+
             return redirect(url_for("home"))
 
         else:
             return "❌ Invalid Email or Password"
 
     return render_template("login.html")
-
 # Logout
 @app.route("/logout")
 def logout():
@@ -643,12 +644,13 @@ def order_details(order_id):
 from flask import session, abort
 
 def admin_required():
+    print(session)
+
     if "user_id" not in session:
         abort(401)
 
-    if session.get("email") != "testilite1234@gmail.com":
+    if session.get("is_admin") != 1:
         abort(403)
-
 @app.route("/admin")
 def admin_dashboard():
     admin_required()
